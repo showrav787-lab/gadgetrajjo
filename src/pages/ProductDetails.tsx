@@ -12,6 +12,7 @@ import { ShoppingCart, ArrowLeft, Plus, Minus, Package, DollarSign, TrendingUp }
 import { Loader2 } from 'lucide-react';
 import { trackProductView, trackProductClick } from '@/hooks/useTracking';
 import { LazyImage } from '@/components/LazyImage';
+import { fbqTrack } from '../fbpixel';
 
 interface Product {
   id: string;
@@ -74,7 +75,7 @@ const ProductDetails = () => {
         if (allImages.length === 0) return 0;
         return (prev + 1) % allImages.length;
       });
-    }, 5000);
+    }, 50000);
 
     return () => clearInterval(interval);
   }, [hasMultipleImages, allImages.length]);
@@ -498,4 +499,3 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-

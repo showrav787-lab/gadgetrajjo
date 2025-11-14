@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { fbqTrack } from '@/fbpixel';
 
 interface Product {
   id: string;
@@ -32,6 +33,17 @@ const Home = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  // FB Pixel ViewContent event when products load
+  useEffect(() => {
+    if (products.length > 0) {
+      fbqTrack("ViewContent", {
+        content_category: "Home Page",
+        content_ids: products.map((p) => p.id),
+        content_type: "product_group",
+      });
+    }
+  }, [products]);
 
   const fetchProducts = async () => {
     try {
@@ -113,15 +125,23 @@ const Home = () => {
   };
 
   const handleSearch = (query: string) => {
+    // Track FB Pixel Search event
+    fbqTrack("Search", {
+      search_string: query,
+    });
+  
     setCurrentPage(1); // Reset to first page on search
+  
     if (!query.trim()) {
       setFilteredProducts(products);
       return;
     }
+  
     const filtered = products.filter((p) =>
       p.name.toLowerCase().includes(query.toLowerCase()) ||
       p.description?.toLowerCase().includes(query.toLowerCase())
     );
+  
     setFilteredProducts(filtered);
   };
 

@@ -1,3 +1,5 @@
+import { fbqTrack } from '@/fbpixel';
+
 // Strict helper to get the first valid image URL
 function getFirstImageUrl(imageData: any): string | null {
   if (!imageData) return null;
@@ -288,13 +290,21 @@ const Cart = () => {
                           </Button>
                           <span className="w-10 sm:w-12 text-center font-semibold text-sm sm:text-base">{item.quantity}</span>
                           <Button
-                            size="icon"
-                            variant="outline"
-                            className="h-7 w-7 sm:h-8 sm:w-8 transition-all duration-200 hover:scale-110"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          >
-                            <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
-                          </Button>
+  size="icon"
+  variant="outline"
+  className="h-7 w-7 sm:h-8 sm:w-8 transition-all duration-200 hover:scale-110"
+  onClick={() => {
+    fbqTrack("AddToCart", {
+      content_ids: [item.id],
+      content_type: "product",
+      value: item.price,
+      currency: "BDT",
+    });
+    updateQuantity(item.id, item.quantity + 1);
+  }}
+>
+  <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+</Button>
                           <Button
                             size="icon"
                             variant="destructive"
